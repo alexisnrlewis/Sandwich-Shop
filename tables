@@ -1,0 +1,84 @@
+Use sandwich;
+CREATE Table Customer (
+	CustomerId int Auto_Increment,
+   	CustUsername varchar(25),
+    	Email varchar(50),
+    	Phone varchar(10),
+    	LoyaltyPoints int DEFAULT (0),
+    	Primary Key (CustomerId),
+    	Unique (CustUsername, Email)
+   	);
+Create Table Menu (
+	MenuItemId int Auto_Increment,
+    	ItemName varchar(50) NOT NULL,
+    	Descr varchar(250),
+    	Price decimal(10,2) NOT NULL,
+    	Category varchar(50), /*Type of sub (meatball, italian etc.)
+    	Primary Key (MenuItemId),
+    	Unique (ItemName)
+    	);
+Create Table Ingredients (
+	IngredientId int Auto_Increment,
+    	IngName varchar(50) NOT NULL,
+    	Price decimal(5,2) NOT NULL,
+    	Category varchar(50), /*Meat, Produce, etc*/
+    	Availablily boolean NOT NULL,
+    	Unique (IngName, IngredientId),
+    	Primary Key (IngredientId)
+   	);
+Create Table Orders (
+	OrderId int Auto_Increment,
+    	CustomerId int NOT NULL,
+    	OrderDate timestamp default current_timestamp,
+    	Amount decimal(10,2) NOT NULL,
+    	Status Enum('In Progress', 'Completed', 'Pending', 'Canceled'),
+    	Unique (OrderId, CustomerId),
+    	Primary Key (OrderId)
+	);
+Create Table OrderItems (
+	OrderItemId int Auto_Increment,
+    	OrderId int NOT NULL,
+    	MenuItemId int Null, /*(Preset menu item is chosen)*/
+    	IngredientId int NULL, /*(Custom ingredient is chosen)*/
+    	Quantity int NOT NULL,
+    	Price decimal(10,2) NOT NULL,
+    	Unique (OrderId),
+    	Primary Key (OrderItemId)
+    	);
+Create Table Invertory (
+	IngredientId int NOT NULL,
+    	AmountInStock int NOT NULL,
+    	ReorderThreshold int NOT NULL, /*(Sets the minimum amount of ingredient can reach before a restock of ingredients is triggered)*/
+    	LastUpdated timestamp default current_timestamp, 
+    	Primary Key (IngredientId),
+    	Foreign Key (IngredientId)
+		References Ingredients(IngredientId)
+	);
+Create Table LoyaltyRewards (
+	RewardId int Auto_Increment,
+    	CustomerId int NOT NULL,
+   	Points int NOT NULL,
+    	RewardType enum('Discount', 'Free Item'),
+   	Redeemed boolean default false,
+    	Primary Key (RewardId),
+	Foreign Key (CustomerId)
+		References Customer(CustomerId)
+	);
+Create Table Payments (
+	PaymentId int Auto_Increment,
+    	OrderId int NOT NULL,
+    	PaymentType enum('Cash','Card'),
+    	AmountPaid decimal(10,2) NOT NULL,
+    	PaymentDate timestamp default current_timestamp,
+    	Primary Key (PaymentId),
+    	Foreign Key (OrderId)
+		References Orders(OrderId)
+    	);
+Create TABLE Staff (
+    StaffId INT AUTO_INCREMENT,
+    StaffUsername Varchar(25) Not Null,
+    Password Varchar(255) Not Null,
+    Role Varchar(50) Not Null,
+    PRIMARY Key (StaffId),
+    Unique (StaffUsername)
+);
