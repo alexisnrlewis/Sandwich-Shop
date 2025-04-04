@@ -1,0 +1,194 @@
+<?php
+// Database connection parameters
+$servername = "localhost";
+$username = "username";
+$password = "password";
+$dbname = "sandwich";
+
+// Create connection
+$conn = new mysqli('localhost', 'username', 'password', 'sandwich');
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Query to retrieve CustomerId, CustUsername, Email, Phone, and LoyaltyPoints from Customer table
+$sql = "SELECT CustomerId, CustUsername, Email, Phone, LoyaltyPoints FROM Customer";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // Output data for each row
+    while ($row = $result->fetch_assoc()) {
+        echo "CustomerId: " . $row["CustomerId"] . " - CustUsername: " . $row["CustUsername"] . 
+             " - Email: " . $row["Email"] . " - Phone: " . $row["Phone"] . 
+             " - LoyaltyPoints: " . $row["LoyaltyPoints"] . "<br>";
+    }
+} else {
+    echo "No results found.";
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve form data
+    $customerId = $_POST['CustomerId'];
+    $custUsername = $_POST['CustUsername'];
+    $email = $_POST['Email'];
+    $phone = $_POST['Phone'];
+    
+    // Sample output to confirm form data
+    echo "Customer ID: " . $customerId . "<br>";
+    echo "Username: " . $custUsername . "<br>";
+    echo "Email: " . $email . "<br>";
+    echo "Phone: " . $phone . "<br>";
+$insertSql = "INSERT INTO Customer (CustomerId, CustUsername, Email, Phone) VALUES ('$customerId', '$custUsername', '$email', '$phone')
+                  ON DUPLICATE KEY UPDATE CustUsername = '$custUsername', Email = '$email', Phone = '$phone'";
+
+    if ($conn->query($insertSql) === TRUE) {
+        echo "Customer record updated successfully!";
+    } else {
+        echo "Error: " . $insertSql . "<br>" . $conn->error;
+    }
+}
+
+// Close the database connection
+$conn->close();
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandwich Order Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- Customer Information Section -->
+    <div class="section" id="customer-info">
+        <h2>Customer Information</h2>
+        <form id="orderForm" method="POST" action="">
+            <label for="memberNumber">Member Number:</label>
+            <input type="CustomerId" id="CustomerId" name="CustomerId">
+
+            <label for="firstName">Username:</label>
+            <input type="CustUsername" id="CustUsername" name="CustUsername" required>
+
+            <label for="Phone">Phone:</label>
+            <input type="Phone" id="Phone" name="Phone" required>
+
+            <label for="Email">Email:</label>
+            <input type="Email" id="Email" name="Email" required>
+
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandwich Order Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- Customer Information Section -->
+    <div class="section" id="customer-info">
+        <h2>Customer Information</h2>
+        <form id="orderForm" method="POST" action="process_order.php">
+            <label for="memberNumber">Member Number:</label>
+            <input type="CustomerId" id="CustomerId" name="CustomerId">
+
+            <label for="firstName">Username:</label>
+            <input type="CustUsername" id="CustUsername" name="CustUsername" required>
+
+            <label for="Phone">Phone:</label>
+            <input type="Phone" id="Phone" name="Phone" required>
+
+            <label for="Email">Email:</label>
+            <input type="Email" id="Email" name="Email" required>
+
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+
+    <!-- Sandwich Order Form Section -->
+    <div class="section" id="sandwich-order-form">
+        <h2>Sandwich Order Form</h2>
+
+        <!-- Sandwich Options -->
+        <label>Sandwich Type:</label>
+        <input type="radio" id="customSandwich" name="sandwich_type" value="custom" checked>
+        <label for="customSandwich">Build Your Own Sandwich</label>
+
+        <input type="radio" id="prebuiltSandwich" name="sandwich_type" value="prebuilt">
+        <label for="prebuiltSandwich">Select Prebuilt Sandwich</label>
+
+         <!-- Sandwich Details -->
+~        <h3>Sandwich Details</h3>
+~        <label for="breadType">Bread Type:</label>
+~        <select id="breadType" name="bread_type">
+~            <option value="white">White</option>
+~            <option value="wheat">Wheat</option>
+~            <option value="sourdough">Sourdough</option>
+~            <option value="multigrain">Multigrain</option>
+~            <option value="wrap">Wrap</option>
+~        </select>
+~
+~        <label for="sandwichSize">Sandwich Size:</label>
+~        <select id="sandwichSize" name="sandwich_size">
+~            <option value="6">6 inches</option>
+~            <option value="12">12 inches</option>
+~        </select>
+~
+~        <label for="sauce">Sauce:</label>
+~        <select id="sauce" name="sauce">
+~            <option value="mayo">Mayo</option>
+~            <option value="mustard">Mustard</option>
+~            <option value="italian_dressing">Italian Dressing</option>
+~            <option value="caesar">Caesar Dressing</option>
+            <option value="balsamic">Balsamic</option>
+            <option value="Hummus">Hummus</option>
+~        </select>
+~
+~        <!-- Toppings -->
+~        <h3>Toppings</h3>
+~        <div class="toppings">
+~            <div class="topping-category">
+~                <h4>Meat</h4>
+~                <input type="checkbox" name="toppings[]" value="ham">Ham<br>
+~                <input type="checkbox" name="toppings[]" value="turkey">Turkey<br>
+~                <input type="checkbox" name="toppings[]" value="chicken">Chicken<br>
+~                <input type="checkbox" name="toppings[]" value="bacon">Bacon<br>
+                 <input type="checkbox" name="toppings[]" value="salami">Salami<br>
+                 <input type="checkbox" name="toppings[]" value="pepperoni">Pepperoni<br>
+                 <input type="checkbox" name="toppings[]" value="meatballs">Meatballs<br>
+~            </div>
+~            <div class="topping-category">
+~                <h4>Cheese</h4>
+~                <input type="checkbox" name="toppings[]" value="cheddar">Cheddar<br>
+~                <input type="checkbox" name="toppings[]" value="mozzarella">Mozzarella<br>
+~                <input type="checkbox" name="toppings[]" value="provolone">Provolone<br>
+~                <input type="checkbox" name="toppings[]" value="swiss">Swiss<br>
+                 <input type="checkbox" name="toppings[]" value="american">American<br>
+~            </div>
+~            <div class="topping-category">
+~                <h4>Veggies</h4>
+~                <input type="checkbox" name="toppings[]" value="lettuce">Lettuce<br>
+~                <input type="checkbox" name="toppings[]" value="tomato">Tomato<br>
+~                <input type="checkbox" name="toppings[]" value="onion">Onion<br>
+~                <input type="checkbox" name="toppings[]" value="spinach">Spinach<br>
+                 <input type="checkbox" name="toppings[]" value="bell peppers">Bell Peppers<br>
+                 <input type="checkbox" name="toppings[]" value="cucumber">Cucumber<br>
+~            </div><input type="checkbox" name="toppings[]" value="avacado">Avacado<br>
+~        </div>
+~    </div>
+~</div>
+~
+~</body>
+~</html>
